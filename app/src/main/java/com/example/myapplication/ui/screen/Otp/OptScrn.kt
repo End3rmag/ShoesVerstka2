@@ -18,17 +18,6 @@ fun OtpTextFiled(
     keyboardActions: KeyboardActions = KeyboardActions()
 ){
     BasicTextField(
-        length = length,
-        keyboardActions = keyboardActions,
-        keyboardOptions = keyboardOptions,
-        modifier = modifier,
-        onValueChanged = onValueChanged{
-            if(it.length<= length){
-                onValueChanged(it)
-            }
-        },
-
-
-
+        value = value
     )
 }
