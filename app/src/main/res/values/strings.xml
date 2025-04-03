@@ -25,4 +25,6 @@
     <string name="incorrect_password">Неправильный пароль</string>
     <string name="incorrect_name">Неправильное имя</string>
     <string name="privacy_policy">Даю согласие на обработку персональных данных</string>
+    <string name="OTP">OTP Проверка</string>
+    <string name="subOTP">Пожалуйста, Проверьте свою электронную почту, чтобы увидеть код подтверждения</string>
 </resources>
