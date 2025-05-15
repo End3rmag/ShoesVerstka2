@@ -25,7 +25,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.myapplication.R
+import com.example.myapplication.SignIn
 import com.example.myapplication.ui.screen.Otp.OptScrn
 import com.example.myapplication.ui.screen.component.AuthButton
 import com.example.myapplication.ui.screen.component.AuthTextField
@@ -33,15 +35,9 @@ import com.example.myapplication.ui.screen.component.PasswordRecoveryDialog
 import com.example.myapplication.ui.screen.component.TitleWithSubtitleText
 import com.example.myapplication.ui.theme.MatuleTheme
 
-@Preview
+
 @Composable
-fun ADS(){
-    MatuleTheme{
-        RecoverPasswordScrn()
-    }
-}
-@Composable
-fun RecoverPasswordScrn() {
+fun RecoverPasswordScrn(navController: NavController) {
     val recoverPasswordViewModel: RecoverPasswordViewModel = viewModel()
     var isDialogOpen by remember { mutableStateOf(false) }
 
@@ -52,9 +48,12 @@ fun RecoverPasswordScrn() {
                     .padding(top = 50.dp)
                     .fillMaxWidth()
                     .height(40.dp)
-            ) {
-                IconButton(onClick = {}) {
-                    Icon(painter = painterResource(R.drawable.back_arrow), contentDescription = null)
+            )
+
+            {
+                IconButton(onClick = {navController.navigate(route = SignIn)}) {
+                    Icon(painter = painterResource(R.drawable.back_arrow),
+                        contentDescription = null)
                 }
             }
         },
@@ -62,11 +61,10 @@ fun RecoverPasswordScrn() {
         RecoverPasswordContent(paddingValues, recoverPasswordViewModel, onRequestOtp = { isDialogOpen = true })
     }
 
-    // Отображение диалогового окна в RecoverPasswordScrn
     if (isDialogOpen) {
         PasswordRecoveryDialog(
             isDialogOpen = isDialogOpen,
-            onDismiss = { isDialogOpen = false } // Закрываем диалог
+            onDismiss = { isDialogOpen = false }
         )
     }
 }
@@ -100,7 +98,6 @@ fun RecoverPasswordContent(
             label = { Text(text = stringResource(R.string.email)) }
         )
 
-        // Добавление логики открытия диалога при нажатии на кнопку
         AuthButton(onClick = { onRequestOtp() }) {
             Text(stringResource(R.string.recover))
         }

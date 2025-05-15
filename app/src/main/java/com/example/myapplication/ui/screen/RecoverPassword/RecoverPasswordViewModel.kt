@@ -16,4 +16,11 @@ class RecoverPasswordViewModel: ViewModel() {
     fun setEmail(email: String){
         recoverPasswordState.value = recoverPasswordState.value.copy(email = email)
     }
+    fun showDialog() {
+        recoverPasswordState.value = recoverPasswordState.value.copy(showDialog = true)
+    }
+
+    fun hideDialog() {
+        recoverPasswordState.value = recoverPasswordState.value.copy(showDialog = false)
+    }
 }

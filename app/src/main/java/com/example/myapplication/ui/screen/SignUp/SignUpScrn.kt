@@ -30,12 +30,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.ui.data.domain.usecase.AuthUseCase
 import com.example.myapplication.ui.data.remote.RetrofitClient
 import com.example.myapplication.ui.data.remote.User
 import com.example.myapplication.ui.screen.SignIn.SignInScrn
+import com.example.myapplication.ui.screen.SignIn.SignInViewModel
 import com.example.myapplication.ui.screen.component.AuthButton
 import com.example.myapplication.ui.screen.component.AuthTextField
 import com.example.myapplication.ui.screen.component.PasswordTextField
@@ -45,21 +47,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@Preview
 @Composable
-fun asad(){
-MatuleTheme{
-
-//SignUpScrn ()
-}
-
-
-}
-
-@Composable
-fun SignUpScrn(viewModel: SignUpViewModel, onNavigationToProfile: () -> Unit) {
+fun SignUpScrn(onNavigationToHome: () -> Unit, navController: NavController) {
+    val signUpViewModel: SignUpViewModel = koinViewModel()
     val snackBarHostState = remember { SnackbarHostState() }
-    val signUpViewModel:SignUpViewModel = koinViewModel()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -102,7 +93,7 @@ fun SignUpScrn(viewModel: SignUpViewModel, onNavigationToProfile: () -> Unit) {
         val registrationScreenState = signUpViewModel.signUpState
         LaunchedEffect(registrationScreenState.value.isSignUp) {
             if(registrationScreenState.value.isSignUp) {
-                onNavigationToProfile()
+                onNavigationToHome()
             }
         }
 

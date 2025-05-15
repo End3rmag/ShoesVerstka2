@@ -22,10 +22,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,21 +53,15 @@ import com.example.myapplication.ui.screen.component.AuthTextField
 import com.example.myapplication.ui.screen.component.PasswordTextField
 import com.example.myapplication.ui.screen.component.TitleWithSubtitleText
 import com.example.myapplication.ui.theme.MatuleTheme
+import org.koin.androidx.compose.koinViewModel
 
-@Preview
-@Composable
-fun SignInScreenPreview(){
-    MatuleTheme{
-        val navController = rememberNavController()
-
-        SignInScrn(navController)
-    }
-}
 
 @Composable
-fun SignInScrn(navController: NavHostController) {
-    val signInViewModel: SignInViewModel = viewModel()
+fun SignInScrn(onSignInSuccess: () -> Unit,navController: NavHostController) {
+    val signInViewModel: SignInViewModel = koinViewModel()
+    val snackBarHostState = remember { SnackbarHostState() }
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             Row(
                 modifier = Modifier
@@ -72,11 +69,10 @@ fun SignInScrn(navController: NavHostController) {
                     .fillMaxWidth()
                     .height(40.dp)
             ) {
-                IconButton(onClick = { }) {
+                IconButton(onClick = {}) {
                     Icon(
                         painter = painterResource(R.drawable.back_arrow),
-                        contentDescription = null
-                    )
+                        contentDescription = null)
                 }
             }
         },
@@ -97,7 +93,19 @@ fun SignInScrn(navController: NavHostController) {
             }
         }
     ) { paddingValues ->
-        SignInContent(paddingValues, signInViewModel, navController)
+        SignInContent(paddingValues, signInViewModel, navController
+        )
+        val authorizationScreenState = signInViewModel.signInState
+        LaunchedEffect(authorizationScreenState.value.isSignIn) {
+            if(authorizationScreenState.value.isSignIn){
+                onSignInSuccess()
+            }
+        }
+        LaunchedEffect(authorizationScreenState.value.errorMessage) {
+            authorizationScreenState.value.errorMessage?.let {
+                snackBarHostState.showSnackbar(it)
+            }
+        }
     }
 }
 
@@ -154,4 +162,19 @@ fun SignInContent(paddingValues: PaddingValues, signInViewModel: SignInViewModel
             Text(stringResource(R.string.enter))
         }
     }
+}
+@Preview(showBackground = true)
+@Composable
+fun SignInScrnPreview() {
+    // Создали экземпляр ViewModel (можно использовать mock или версию с предустановленными данными)
+    val signInViewModel = SignInViewModel() // Нужно настроить правильную реализацию
+    val navController = rememberNavController()
+
+    SignInScrn(
+        onSignInSuccess = { /* Действие при успешной авторизации */ },
+        navController = navController
+    )
+
+    // Если потребуется, можно сделать и настройки, например:
+    navController.navigate("someRoute")
 }
