@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.ui.data.domain.usecase.AuthUseCase
 import com.example.myapplication.ui.data.remote.RetrofitClient
@@ -36,6 +38,7 @@ import com.example.myapplication.ui.data.remote.User
 import com.example.myapplication.ui.screen.SignIn.SignInScrn
 import com.example.myapplication.ui.screen.component.AuthButton
 import com.example.myapplication.ui.screen.component.AuthTextField
+import com.example.myapplication.ui.screen.component.PasswordTextField
 import com.example.myapplication.ui.screen.component.TitleWithSubtitleText
 import com.example.myapplication.ui.theme.MatuleTheme
 import kotlinx.coroutines.Dispatchers
@@ -45,12 +48,16 @@ import org.koin.androidx.compose.koinViewModel
 @Preview
 @Composable
 fun asad(){
-    SignInScrn()
+MatuleTheme{
+
+//SignUpScrn ()
 }
 
 
+}
+
 @Composable
-fun SignUpScrn(onNavigationToProfile: () -> Unit) {
+fun SignUpScrn(viewModel: SignUpViewModel, onNavigationToProfile: () -> Unit) {
     val snackBarHostState = remember { SnackbarHostState() }
     val signUpViewModel:SignUpViewModel = koinViewModel()
 
@@ -110,22 +117,23 @@ fun SignUpScrn(onNavigationToProfile: () -> Unit) {
 @Composable
 fun SignUpContent(paddingValues: PaddingValues, signUpViewModel: SignUpViewModel) {
     val signUpState = signUpViewModel.signUpState
+
     Column(
-        modifier = Modifier.padding(paddingValues = paddingValues),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.padding(paddingValues),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TitleWithSubtitleText(
             title = stringResource(R.string.registration),
             subTitle = stringResource(R.string.sign_in_subtitle)
         )
-        Spacer(modifier = Modifier.height(35.dp))
 
         AuthTextField(
             value = signUpState.value.name,
             onChangeValue = { signUpViewModel.setName(it) },
             isError = false,
             placeholder = { Text(text = stringResource(R.string.enter_name)) },
-            supportingText = { Text(text = stringResource(R.string.incorrect_name)) },
+            supportingText = {Text(text = stringResource(R.string.incorrect_name)) },
             label = { Text(text = stringResource(R.string.name)) }
         )
 
@@ -133,18 +141,15 @@ fun SignUpContent(paddingValues: PaddingValues, signUpViewModel: SignUpViewModel
             value = signUpState.value.email,
             onChangeValue = { signUpViewModel.setEmail(it) },
             isError = signUpViewModel.emailHasError.value,
-            placeholder = { Text(text = stringResource(R.string.template_email)) },
-            supportingText = { Text(text = stringResource(R.string.enter_email)) },
+            placeholder = { Text(text = stringResource(R.string.template_email)) },supportingText = { if (signUpViewModel.emailHasError.value) Text(text = stringResource(R.string.enter_email)) },
             label = { Text(text = stringResource(R.string.email)) }
         )
 
-        AuthTextField(
+        PasswordTextField(
             value = signUpState.value.password,
-            onChangeValue = { signUpViewModel.setPassword(it) },
-            isError = false,
-            placeholder = { Text(text = stringResource(R.string.password_template)) },
-            supportingText = { Text(text = stringResource(R.string.incorrect_password)) },
-            label = { Text(text = stringResource(R.string.password)) }
+            onValueChange = { signUpViewModel.setPassword(it) },
+            placeHolderText = stringResource(R.string.star_password),
+            labelText = stringResource(R.string.password)
         )
 
         Row(
@@ -154,7 +159,7 @@ fun SignUpContent(paddingValues: PaddingValues, signUpViewModel: SignUpViewModel
             Icon(
                 painter = painterResource(R.drawable.policy_check),
                 contentDescription = null,
-                modifier = Modifier.height(18.dp)
+                modifier = Modifier.size(18.dp)
             )
             Text(
                 text = stringResource(R.string.privacy_policy),
@@ -165,17 +170,12 @@ fun SignUpContent(paddingValues: PaddingValues, signUpViewModel: SignUpViewModel
                 )
             )
         }
-        val coroutine = rememberCoroutineScope{Dispatchers.IO}
-        AuthButton(onClick = {
-            val user = User(userName = signUpState.value.name, email = signUpState.value.email, password = signUpState.value.password)
 
+        AuthButton(onClick = {
             signUpViewModel.signUp()
-//            coroutine.launch {
-//                RetrofitClient.retrofit.registration(user)
-//            }
         }) {
             Text(stringResource(R.string.sign_up))
-            if(signUpState.value.isLoading)CircularProgressIndicator(color = Color.White)
+            if (signUpState.value.isLoading) CircularProgressIndicator(color = Color.White)
         }
     }
 }

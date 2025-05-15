@@ -20,12 +20,14 @@ data class MatuleColors(
     val subTextDark: Color,
     val background:Color,
     val hint: Color,
-    val accent: Color
+    val accent: Color,
+    val color: Color
 )
 
 @Immutable
 data class MatuleTextStyle(
     val headingBold32: TextStyle,
+    val headingBold16: TextStyle,
     val subTitleRegular16: TextStyle,
     val bodyRegular16: TextStyle,
     val bodyRegular14: TextStyle,
@@ -41,6 +43,7 @@ val LocalMatuleTypography = staticCompositionLocalOf {
         bodyRegular14 = TextStyle.Default,
         bodyRegular12 = TextStyle.Default,
         headingBold24 = TextStyle(fontFamily = matuleFontFamily, fontWeight = FontWeight.Bold, fontSize = 32.sp)
+    , headingBold16 = TextStyle(fontFamily = matuleFontFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp)
     )
 }
 
@@ -51,7 +54,8 @@ val LocalMatuleColors = staticCompositionLocalOf {
         subTextDark = Color.Unspecified,
         background = Color.Unspecified,
         hint = Color.Unspecified,
-        accent = Color.Unspecified
+        accent = Color.Unspecified,
+        color = Color.Unspecified
     )
 }
 
@@ -72,7 +76,8 @@ fun MatuleTheme( content: @Composable () -> Unit){
         subTextDark = Color(0xFF707B81),
         background = Color(0xFFF7F7F9),
         hint = Color(0xFF6A6A6A),
-        accent = Color(0xFF48B2E7)
+        accent = Color(0xFF48B2E7),
+        color = Color(0xFF48B2E7)
     )
     val matuleTypography = MatuleTextStyle(
         headingBold32 = TextStyle(fontFamily = matuleFontFamily, fontWeight = FontWeight.Bold, fontSize = 32.sp),
@@ -81,6 +86,7 @@ fun MatuleTheme( content: @Composable () -> Unit){
         bodyRegular16 = TextStyle(fontFamily = matuleFontFamily, fontWeight = FontWeight.Normal, fontSize = 16.sp),
         bodyRegular14 = TextStyle(fontFamily = matuleFontFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp),
         bodyRegular12 = TextStyle(fontFamily = matuleFontFamily, fontWeight = FontWeight.Normal, fontSize = 12.sp),
+        headingBold16 = TextStyle(fontFamily = matuleFontFamily, fontWeight = FontWeight.Bold, fontSize = 16.sp),
     )
     CompositionLocalProvider(
         LocalMatuleColors provides matuleColors,

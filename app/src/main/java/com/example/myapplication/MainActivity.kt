@@ -15,11 +15,13 @@ import com.example.myapplication.ui.screen.RecoverPassword.RecoverPasswordScrn
 import com.example.myapplication.ui.screen.SignIn.SignInScrn
 
 import com.example.myapplication.ui.screen.SignUp.SignUpScrn
+import com.example.myapplication.ui.screen.SignUp.SignUpViewModel
 
 
-import com.example.myapplication.ui.screen.SplashScreen
+//import com.example.myapplication.ui.screen.SplashScreen
 import com.example.myapplication.ui.theme.MatuleTheme
 import kotlinx.serialization.Serializable
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : ComponentActivity() {
@@ -31,28 +33,32 @@ class MainActivity : ComponentActivity() {
             val authRepository = AuthRepository(RetrofitClient.retrofit)
             val localStorage = LocalStorage(applicationContext)
             val authUseCase = AuthUseCase(localStorage, authRepository )
-
+            val singUpViewModel: SignUpViewModel by viewModel()
             val navController = rememberNavController()
             MatuleTheme {
-                NavHost(navController, startDestination = SplashScreen){
+                NavHost(navController, startDestination = "registration") {
 
-                    composable<SplashScreen>{
-                        SplashScreen(
-                            authUseCase = authUseCase,
-                            onNavigationToProfileScreen = {
-                                navController.navigate(route = Profile)
-                            }
-                        ){
-                            navController.navigate(route = Registration)
+                  //  composable("splash") {
+                      //  SplashScreen(
+                       //     authUseCase = authUseCase,
+                       //     onNavigationToProfileScreen = {
+                         //       navController.navigate("profile")
+                       //     }
+                        //) {
+                      //      navController.navigate("registration")
+                     //   }
+                    //}
+                    composable("registration") {
+                        SignUpScrn(singUpViewModel) {
+                            navController.navigate("profile")
                         }
                     }
-                    composable<Registration>{
-                        SignUpScrn (){
-                            navController.navigate(route = Profile)
-                        }
+                    composable("profile") {
+                        SignInScrn(navController)
                     }
-                    composable<Profile> {
-                        SignInScrn()
+
+                    composable("recover_password") {
+                        RecoverPasswordScrn()
                     }
                 }
             }

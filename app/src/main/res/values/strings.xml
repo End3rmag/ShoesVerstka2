@@ -14,7 +14,7 @@
     <string name="enter_name">Введите имя</string>
     <string name="enter_email">Введите почту</string>
     <string name="enter_password">Введите пароль</string>
-    <string name="sign_up">Зарегистрироваться</string>
+    <string name="sign_up">Создать Пользователя</string>
     <string name="sign_in">Есть аккаунт? Войти</string>
     <string name="registration">Регистрация</string>
     <string name="send">Отправить</string>

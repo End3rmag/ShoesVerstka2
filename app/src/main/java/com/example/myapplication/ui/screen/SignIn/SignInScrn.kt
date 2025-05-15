@@ -1,5 +1,7 @@
 package com.example.myapplication.ui.screen.SignIn
 
+import android.media.SubtitleData
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +16,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -27,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset.Companion.Unspecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,9 +42,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.ui.screen.component.AuthButton
 import com.example.myapplication.ui.screen.component.AuthTextField
+import com.example.myapplication.ui.screen.component.PasswordTextField
 import com.example.myapplication.ui.screen.component.TitleWithSubtitleText
 import com.example.myapplication.ui.theme.MatuleTheme
 
@@ -46,12 +55,14 @@ import com.example.myapplication.ui.theme.MatuleTheme
 @Composable
 fun SignInScreenPreview(){
     MatuleTheme{
-        SignInScrn()
+        val navController = rememberNavController()
+
+        SignInScrn(navController)
     }
 }
 
 @Composable
-fun SignInScrn(){
+fun SignInScrn(navController: NavHostController) {
     val signInViewModel: SignInViewModel = viewModel()
     Scaffold(
         topBar = {
@@ -61,10 +72,11 @@ fun SignInScrn(){
                     .fillMaxWidth()
                     .height(40.dp)
             ) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { }) {
                     Icon(
                         painter = painterResource(R.drawable.back_arrow),
-                        contentDescription = null)
+                        contentDescription = null
+                    )
                 }
             }
         },
@@ -85,12 +97,12 @@ fun SignInScrn(){
             }
         }
     ) { paddingValues ->
-        SignInContent(paddingValues, signInViewModel)
+        SignInContent(paddingValues, signInViewModel, navController)
     }
 }
 
 @Composable
-fun SignInContent(paddingValues: PaddingValues, signInViewModel: SignInViewModel){
+fun SignInContent(paddingValues: PaddingValues, signInViewModel: SignInViewModel, navController: NavHostController) {
     val signInState = signInViewModel.signInState
     Column(
         modifier = Modifier.padding(paddingValues = paddingValues),
@@ -104,108 +116,42 @@ fun SignInContent(paddingValues: PaddingValues, signInViewModel: SignInViewModel
 
         AuthTextField(
             value = signInState.value.email,
-            onChangeValue = {
-                signInViewModel.setEmail(it)
-            },
+            onChangeValue = { signInViewModel.setEmail(it) },
             isError = signInViewModel.emailHasError.value,
-            placeholder = {
-                Text(text = stringResource(R.string.template_email))
-            },
-            supportingText = {
-                Text(text = stringResource(R.string.incorrect_email))
-            },
-            label = {
-                Text(text = stringResource(R.string.email))
-            }
+            placeholder = { Text(text = stringResource(R.string.template_email)) },
+            supportingText = { Text(text = stringResource(R.string.incorrect_email)) },
+            label = { Text(text = stringResource(R.string.email)) }
         )
-        AuthTextField(
+        PasswordTextField(
             value = signInState.value.password,
-            onChangeValue = {
-                signInViewModel.setPassword(it)
-            },
-            isError = false,
-            placeholder = {
-                Text(text = stringResource(R.string.password_template))
-            },
-            supportingText = {
-                Text(text = stringResource(R.string.incorrect_password))
-            },
-            label = {
-                Text(text = stringResource(R.string.password))
-            }
+            onValueChange = { signInViewModel.setPassword(it) },
+            placeHolderText = stringResource(R.string.star_password),
+            labelText = stringResource(R.string.password)
         )
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+        ) {
+            Button(
+                onClick = { navController.navigate("recoverPassword") },
+                modifier = Modifier.padding(8.dp),
+                colors = ButtonDefaults.buttonColors(Color.Transparent),
+                elevation = null
+
+            ) {
+                Text(
+                    text = "Восстановить",
+                    style = MatuleTheme.typography.subTitleRegular16.copy(color = MatuleTheme.colors.text)
+                ) }
+        }
+
         AuthButton(
             onClick = {}
         ) {
-            Text(stringResource(R.string.sign_in))
+            Text(stringResource(R.string.enter))
         }
-    }
-}
-@Composable
-fun PasswordTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeHolderText: String? = null,
-    labelText: String? = null
-) {
-    var showPassword by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth()
-            .wrapContentSize(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        if (labelText != null) {
-            Text(
-                text = labelText,
-                style = MatuleTheme.typography.bodyRegular16.copy(MatuleTheme.colors.text),
-                textAlign = TextAlign.Start
-            )
-        }
-
-        // Используем TextField
-        TextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(end = 8.dp),
-            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-            interactionSource = remember { MutableInteractionSource() },
-            placeholder = {
-                if (placeHolderText != null) {
-                    Text(
-                        text = placeHolderText,
-                        style = MatuleTheme.typography.bodyRegular14.copy(color = MatuleTheme.colors.hint)
-                    )
-                }
-            },
-            trailingIcon = {
-                IconButton(onClick = { showPassword = !showPassword }) {
-                    Icon(
-                        imageVector = if (showPassword) {
-                            Icons.Filled.Visibility
-                        } else {
-                            Icons.Filled.VisibilityOff
-                        },
-                        contentDescription = "Переключить видимость пароля"
-                    )
-                }
-            },
-            shape = RoundedCornerShape(14.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MatuleTheme.colors.background,
-                unfocusedContainerColor = MatuleTheme.colors.background,
-                disabledContainerColor = MatuleTheme.colors.background,
-                errorContainerColor = MatuleTheme.colors.background,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent
-            ),
-            isError = false
-        )
     }
 }

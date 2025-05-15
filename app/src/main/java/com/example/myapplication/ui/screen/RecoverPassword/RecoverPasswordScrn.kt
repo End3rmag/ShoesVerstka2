@@ -1,9 +1,12 @@
 package com.example.myapplication.ui.screen.RecoverPassword
 
+import android.app.Dialog
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,6 +15,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,14 +26,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.R
+import com.example.myapplication.ui.screen.Otp.OptScrn
 import com.example.myapplication.ui.screen.component.AuthButton
 import com.example.myapplication.ui.screen.component.AuthTextField
+import com.example.myapplication.ui.screen.component.PasswordRecoveryDialog
 import com.example.myapplication.ui.screen.component.TitleWithSubtitleText
+import com.example.myapplication.ui.theme.MatuleTheme
 
 @Preview
 @Composable
-fun RecoverPasswordScrn(){
+fun ADS(){
+    MatuleTheme{
+        RecoverPasswordScrn()
+    }
+}
+@Composable
+fun RecoverPasswordScrn() {
     val recoverPasswordViewModel: RecoverPasswordViewModel = viewModel()
+    var isDialogOpen by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             Row(
@@ -34,57 +52,56 @@ fun RecoverPasswordScrn(){
                     .padding(top = 50.dp)
                     .fillMaxWidth()
                     .height(40.dp)
-            )
-            {
+            ) {
                 IconButton(onClick = {}) {
-                    Icon(painter = painterResource(R.drawable.back_arrow),
-                        contentDescription = null)
+                    Icon(painter = painterResource(R.drawable.back_arrow), contentDescription = null)
                 }
             }
         },
-    )
-    {
-        paddingValues ->
-        RecoverPasswordContent(paddingValues, recoverPasswordViewModel)
+    ) { paddingValues ->
+        RecoverPasswordContent(paddingValues, recoverPasswordViewModel, onRequestOtp = { isDialogOpen = true })
+    }
+
+    // Отображение диалогового окна в RecoverPasswordScrn
+    if (isDialogOpen) {
+        PasswordRecoveryDialog(
+            isDialogOpen = isDialogOpen,
+            onDismiss = { isDialogOpen = false } // Закрываем диалог
+        )
     }
 }
+
 @Composable
 fun RecoverPasswordContent(
     paddingValues: PaddingValues,
-    recoverPasswordViewModel: RecoverPasswordViewModel
-){
+    recoverPasswordViewModel: RecoverPasswordViewModel,
+    onRequestOtp: () -> Unit
+) {
     val recoverPasswordState = recoverPasswordViewModel.recoverPasswordState
+
     Column(
-        modifier = Modifier.padding(top = 100.dp)
-    )
-    {
+        modifier = Modifier
+            .padding(top = 100.dp)
+            .fillMaxSize()
+    ) {
         TitleWithSubtitleText(
             title = stringResource(R.string.miss_pass),
             subTitle = stringResource(R.string.enter_your_email)
         )
 
-        Spacer(
-            modifier = Modifier.height(35.dp)
-        )
+        Spacer(modifier = Modifier.height(35.dp))
+
         AuthTextField(
             value = recoverPasswordState.value.email,
-            onChangeValue = {
-                recoverPasswordViewModel.setEmail(it)
-            },
+            onChangeValue = { recoverPasswordViewModel.setEmail(it) },
             isError = recoverPasswordViewModel.emailHasError.value,
-            placeholder = {
-                Text(text = stringResource(R.string.template_email))
-            },
-            supportingText = {
-                Text(text = stringResource(R.string.incorrect_email))
-            },
-            label = {
-                Text(text = stringResource(R.string.email))
-            }
+            placeholder = { Text(text = stringResource(R.string.template_email)) },
+            supportingText = { Text(text = stringResource(R.string.incorrect_email)) },
+            label = { Text(text = stringResource(R.string.email)) }
         )
-        AuthButton(
-            onClick = {}
-        ) {
+
+        // Добавление логики открытия диалога при нажатии на кнопку
+        AuthButton(onClick = { onRequestOtp() }) {
             Text(stringResource(R.string.recover))
         }
     }
