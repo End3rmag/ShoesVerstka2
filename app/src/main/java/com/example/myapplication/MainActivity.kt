@@ -90,7 +90,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable<Otp> {
-                         {
+                         OptScrn {
                             navController.navigate(route = Home)
                         }
                     }

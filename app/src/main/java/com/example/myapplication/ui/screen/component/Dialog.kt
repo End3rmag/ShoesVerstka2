@@ -1,18 +1,14 @@
-package com.example.myapplication.ui.screen.component
-
-import android.graphics.Picture
 import androidx.compose.foundation.Image
+import com.example.myapplication.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,43 +18,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.myapplication.R
 import com.example.myapplication.ui.theme.MatuleTheme
 
-@Preview
-@Composable
-fun jfd(){
-    MatuleTheme{
-        PasswordRecoveryDialog (
-                isDialogOpen = true,
-            onDismiss = {}
-        )
-    }
-}
 @Composable
 fun PasswordRecoveryDialog(
     isDialogOpen: Boolean,
-    onDismiss: () -> Unit
+    onDismissAndNavigate: () -> Unit
 ) {
     if (isDialogOpen) {
-        Dialog(onDismissRequest = { onDismiss() }) {
+        Dialog(
+            onDismissRequest = { onDismissAndNavigate() }
+        ) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = Color.White,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable(enabled = false, onClick = { })
             ) {
                 Column(
                     modifier = Modifier
                         .padding(24.dp)
-                        .fillMaxWidth()
-                        .clickable { onDismiss() }, // Закрытие при клике
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Синий круг с изображением
                     Box(
                         modifier = Modifier.size(64.dp)
                             .background(MatuleTheme.colors.color, shape = MaterialTheme.shapes.extraLarge),
@@ -78,7 +64,7 @@ fun PasswordRecoveryDialog(
                     )
                     Text(
                         text = "Мы отправили код восстановления пароля на вашу электронную почту.",
-                        style =MatuleTheme.typography.subTitleRegular16.copy(color = MatuleTheme.colors.subTextDark),
+                        style = MatuleTheme.typography.subTitleRegular16.copy(color = MatuleTheme.colors.subTextDark),
                         textAlign = TextAlign.Center
                     )
                 }
@@ -86,3 +72,4 @@ fun PasswordRecoveryDialog(
         }
     }
 }
+

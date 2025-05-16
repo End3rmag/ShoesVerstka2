@@ -47,9 +47,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.Otp
 import com.example.myapplication.R
 import com.example.myapplication.RecoverPassword
+import com.example.myapplication.Registration
+import com.example.myapplication.ui.screen.SignUp.SignUpScrn
 import com.example.myapplication.ui.screen.component.AuthButton
 import com.example.myapplication.ui.screen.component.AuthTextField
 import com.example.myapplication.ui.screen.component.PasswordTextField
@@ -88,14 +89,14 @@ fun SignInScrn(onSignInSuccess: () -> Unit,navController: NavHostController) {
                     .height(40.dp)
             ) {
                 Button(
-                    onClick = { navController.navigate(Otp) },
-                    modifier = Modifier.padding(8.dp),
+                    onClick = { navController.navigate(Registration) },
+
                     colors = ButtonDefaults.buttonColors(Color.Transparent),
                     elevation = null
 
                 ) {
                     Text(
-                        text = "Создать пользователя",
+                        text = stringResource(R.string.sign_up),
                         style = MatuleTheme.typography.subTitleRegular16.copy(color = MatuleTheme.colors.text)
                     ) }
             }

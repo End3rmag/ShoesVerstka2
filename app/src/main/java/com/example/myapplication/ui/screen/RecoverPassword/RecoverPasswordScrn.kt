@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screen.RecoverPassword
 
+import PasswordRecoveryDialog
 import android.app.Dialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,12 +27,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.myapplication.Otp
 import com.example.myapplication.R
 import com.example.myapplication.SignIn
 import com.example.myapplication.ui.screen.Otp.OptScrn
 import com.example.myapplication.ui.screen.component.AuthButton
 import com.example.myapplication.ui.screen.component.AuthTextField
-import com.example.myapplication.ui.screen.component.PasswordRecoveryDialog
 import com.example.myapplication.ui.screen.component.TitleWithSubtitleText
 import com.example.myapplication.ui.theme.MatuleTheme
 
@@ -64,7 +65,10 @@ fun RecoverPasswordScrn(navController: NavController) {
     if (isDialogOpen) {
         PasswordRecoveryDialog(
             isDialogOpen = isDialogOpen,
-            onDismiss = { isDialogOpen = false }
+            onDismissAndNavigate = {
+                isDialogOpen = false
+                navController.navigate(route = Otp)
+            }
         )
     }
 }

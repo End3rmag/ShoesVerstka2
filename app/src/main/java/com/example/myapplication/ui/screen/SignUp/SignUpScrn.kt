@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +35,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
+import com.example.myapplication.Registration
+import com.example.myapplication.SignIn
 import com.example.myapplication.ui.data.domain.usecase.AuthUseCase
 import com.example.myapplication.ui.data.remote.RetrofitClient
 import com.example.myapplication.ui.data.remote.User
@@ -78,11 +82,17 @@ fun SignUpScrn(onNavigationToHome: () -> Unit, navController: NavController) {
                     .fillMaxWidth()
                     .height(40.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.sign_in),
-                    style = MatuleTheme.typography.bodyRegular16.copy(color = MatuleTheme.colors.text),
-                    textAlign = TextAlign.Center
-                )
+                Button(
+                    onClick = { navController.navigate(SignIn) },
+
+                    colors = ButtonDefaults.buttonColors(Color.Transparent),
+                    elevation = null
+
+                ) {
+                    Text(
+                        text = stringResource(R.string.sign_in),
+                        style = MatuleTheme.typography.subTitleRegular16.copy(color = MatuleTheme.colors.text)
+                    ) }
             }
         }
     )
