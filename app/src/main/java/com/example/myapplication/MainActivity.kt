@@ -37,12 +37,12 @@ class MainActivity : ComponentActivity() {
                             authUseCase = authUseCase,
                             dataStore = dataStore,
                             onNavigateToSignIn = {
-                                navController.navigate(route = SignIn) {
+                                navController.navigate(route = Slides) {
                                     popUpTo(SplashScreen) { inclusive = true }
                                 }
                             },
                             onNavigateToSlides = {
-                                navController.navigate(route = Slides) {
+                                navController.navigate(route = SignIn) {
                                     popUpTo(SplashScreen) { inclusive = true }
                                 }
                             },
